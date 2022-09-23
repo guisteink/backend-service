@@ -7,6 +7,7 @@ const timer = require('./helpers/timer');
 
 app.use('/', async (req, res) => {
     const { fibonacci } = req.query ?? 0;
+    console.log(`req received`);
 
     let start = new Date().getTime();
     let result = await fibonacciNumber(fibonacci)
