@@ -1,0 +1,13 @@
+{
+  "name": "backend-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/guisteink/backend-service.git",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.1"
+  },
+  "scripts": {
+    "start": "node --stack-size=32000 src/index.js"
+  }
+}
