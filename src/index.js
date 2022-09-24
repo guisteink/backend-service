@@ -5,6 +5,10 @@ const port = 8000;
 const fibonacciNumber = require('./algorithms/fibonacci');
 const timer = require('./helpers/timer');
 
+app.use('/health-check', async(req, res) => {
+    res.status(200).send('OK');
+});
+
 app.use('/', async (req, res) => {
     const { fibonacci } = req.query ?? 0;
     console.log(`req received`);
