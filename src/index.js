@@ -6,7 +6,7 @@ const fibonacciNumber = require('./algorithms/fibonacci');
 const timer = require('./helpers/timer');
 
 app.use('/health-check', async(req, res) => {
-    console.info(`health-check request received at ${new Date().getTime()}`);
+    console.info(`health-check request received at ${new Date().toISOString()}`);
     res
         .status(200)
         .send({
@@ -16,7 +16,7 @@ app.use('/health-check', async(req, res) => {
 
 app.use('/', async (req, res) => {
     const { fibonacci } = req.query ?? 0;
-    console.info(`fibonnaci request received at ${new Date().getTime()}`);
+    console.info(`fibonnaci request received at ${new Date().toISOString()}`);
 
     let start = new Date().getTime();
     let result = await fibonacciNumber(fibonacci)
