@@ -12,6 +12,7 @@
     "serve": "pm2 start src/index.js",
     "stop": "pm2 stop src/index.js",
     "restart": "pm2 restart src/index.js",
-    "kill": "killall node"
+    "kill": "killall node",
+    "log": "pm2 logs index --lines=10"
   }
 }
