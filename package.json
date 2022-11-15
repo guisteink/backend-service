@@ -8,6 +8,10 @@
     "express": "^4.18.1"
   },
   "scripts": {
-    "start": "node --stack-size=32000 src/index.js"
+    "start": "node --stack-size=32000 src/index.js",
+    "serve": "pm2 start src/index.js",
+    "stop": "pm2 stop src/index.js",
+    "restart": "pm2 restart src/index.js",
+    "kill": "killall node"
   }
 }
