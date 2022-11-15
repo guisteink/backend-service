@@ -1,9 +1,18 @@
 const express = require('express')
 const app = express()
 const port = 8000;
+const server = env.SERVER;
 
 const fibonacciNumber = require('./algorithms/fibonacci');
 const timer = require('./helpers/timer');
+
+app.use('/server', async(req, res) => {
+    res
+        .status(200)
+        .send({
+            "result": server
+        });
+});
 
 app.use('/health-check', async(req, res) => {
     console.info(`health-check request received at ${new Date().toISOString()}`);
