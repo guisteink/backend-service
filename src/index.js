@@ -6,7 +6,7 @@ const fibonacciNumber = require('./algorithms/fibonacci');
 const timer = require('./helpers/timer');
 
 app.use('/health-check', async(req, res) => {
-    console.info(`health-check request received`);
+    console.info(`health-check request received: ${new Date().getTime()}`);
     res
         .status(200)
         .send({
