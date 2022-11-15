@@ -1,18 +1,19 @@
 const express = require('express')
 const app = express()
 const port = 8000;
-const server = env.SERVER;
 
 const fibonacciNumber = require('./algorithms/fibonacci');
 const timer = require('./helpers/timer');
 
-app.use('/server', async(req, res) => {
-    res
-        .status(200)
-        .send({
-            "result": server
-        });
-});
+// TODO: add var env to linux ec2 instance
+// const server = env.SERVER;
+// app.use('/server', async(req, res) => {
+//     res
+//         .status(200)
+//         .send({
+//             "result": server
+//         });
+// });
 
 app.use('/health-check', async(req, res) => {
     console.info(`health-check request received at ${new Date().toISOString()}`);
@@ -34,7 +35,8 @@ app.use('/', async (req, res) => {
     console.log(`processing time: ${timer(start, end)} seconds`);
 
     res.json({
-        "result": `Hello from fog server, the result for the ${fibonacci}th fibonacci number is: ${result}`,
+        // "result": `Hello from fog server, the result for the ${fibonacci}th fibonacci number is: ${result}`,
+        "result": `The result for the ${fibonacci}th fibonacci number is: ${result}`,
         "processing_time": `${timer(start, end)} seconds`
     });
 });
