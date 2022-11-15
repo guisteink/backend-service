@@ -7,7 +7,11 @@ const timer = require('./helpers/timer');
 
 app.use('/health-check', async(req, res) => {
     console.log(`health-check request received`);
-    res.status(200).send('OK');
+    res
+        .status(200)
+        .send({
+            "result": "OK"
+        });
 });
 
 app.use('/', async (req, res) => {
