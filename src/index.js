@@ -28,7 +28,7 @@ app.use('/health-check', async(req, res) => {
 app.use('/', async (req, res) => {
     let isCached = false, result, start, end;
     const { fibonacci } = req.query ?? 0;
-    console.info(`fibonnaci request received at ${new Date().toISOString()}`);
+    console.info(`fibonnaci ${fibonacci}th request received at ${new Date().toISOString()}`);
 
     try {
         start = new Date().getTime();
