@@ -1,21 +1,20 @@
 const { readFileSync, existsSync, writeFileSync } = require('fs');
-const express = require('express')
+const express = require('express');
+const redis = require('redis');
 
 const fibonacciNumber = require('./helpers/fibonacciNumberRecursive');
 const timer = require('./helpers/timer');
 
-const app = express()
+const app = express();
 const port = 8000;
+let redisClient;
 
-// TODO: add var env to linux ec2 instance
-// const server = env.SERVER;
-// app.use('/server', async(req, res) => {
-//     res
-//         .status(200)
-//         .send({
-//             "result": server
-//         });
-// });
+(async () => {
+    redisClient = new redis.createClient();
+    redisClient.on("error", (error) => console.error(`Error : ${error}`));
+
+    await redisClient.connect();
+})();
 
 app.use('/health-check', async(req, res) => {
     console.info(`health-check request received at ${new Date().toISOString()}`);
@@ -27,12 +26,28 @@ app.use('/health-check', async(req, res) => {
 });
 
 app.use('/', async (req, res) => {
+    let isCached = false, result, start, end;
     const { fibonacci } = req.query ?? 0;
     console.info(`fibonnaci request received at ${new Date().toISOString()}`);
 
-    let start = new Date().getTime();
-    let result = await fibonacciNumber(fibonacci)
-    let end = new Date().getTime();
+    try {
+        start = new Date().getTime();
+
+        const cache = await redisClient.get(fibonacci);
+        if(cache) {
+            result = JSON.parse(cache);
+            isCached = true;
+        }
+        else {
+            result = await fibonacciNumber(fibonacci);
+            await redisClient.set(fibonacci, JSON.stringify(result));
+        }
+
+        end = new Date().getTime();
+    } catch (error) {
+        console.log(error);
+        throw new Error('Failed to calculate fibonacci number', error);
+    }
 
     let timeSpent = timer(start, end);
     console.log(`processing time: ${timeSpent} seconds`);
@@ -53,7 +68,8 @@ app.use('/', async (req, res) => {
 
     return res.json({
         "result": `The result for the ${fibonacci}th fibonacci number is: ${result}`,
-        "processing_time": `${timeSpent} seconds`
+        "processing_time": `${timeSpent} seconds`,
+        "is_cached": isCached,
     });
 });
 
