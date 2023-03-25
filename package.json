@@ -1,20 +1,21 @@
 {
   "name": "backend-service",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "repository": "https://github.com/guisteink/backend-service.git",
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.1",
     "fs": "^0.0.1-security",
-    "redis": "^4.6.4"
+    "redis": "^4.6.5"
   },
   "scripts": {
-    "start": "node --stack-size=32000 src/index.js",
-    "serve": "pm2 start src/index.js",
-    "stop": "pm2 stop src/index.js",
-    "restart": "pm2 restart src/index.js",
+    "first-step": "redis-server",
+    "start": "npm run first-step & node --stack-size=32000 src/app.js",
+    "serve": "pm2 start src/app.js",
+    "stop": "pm2 stop src/app.js",
+    "restart": "pm2 restart src/app.js",
     "kill": "killall node",
-    "log": "pm2 logs index --lines=10"
+    "log": "pm2 logs app --lines=10"
   }
 }

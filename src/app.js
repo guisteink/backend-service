@@ -2,8 +2,8 @@ const { readFileSync, existsSync, writeFileSync } = require('fs');
 const express = require('express');
 const redis = require('redis');
 
-const fibonacciNumber = require('./helpers/fibonacciNumberRecursive');
-const timer = require('./helpers/timer');
+const fibonacciNumber = require('./algorithms/fibonacciNumberRecursive');
+const timer = require('./utils/timer');
 
 const app = express();
 const port = 8000;
@@ -18,7 +18,7 @@ let redisClient;
 
 app.use('/health-check', async(req, res) => {
     console.info(`health-check request received at ${new Date().toISOString()}`);
-    return res
+    res
         .status(200)
         .send({
             "result": "OK"
@@ -66,11 +66,13 @@ app.use('/', async (req, res) => {
         writeFileSync('./processing-time.json', JSON.stringify({ processingTime, success }));
     }
 
-    return res.json({
-        "result": `The result for the ${fibonacci}th fibonacci number is: ${result}`,
-        "processing_time": `${timeSpent} seconds`,
-        "is_cached": isCached,
-    });
+    res
+        .status(200)
+        .send({
+            "result": `The result for the ${fibonacci}th fibonacci number is: ${result}`,
+            "processing_time": `${timeSpent} seconds`,
+            "is_cached": isCached,
+        });
 });
 
-app.listen(port, () => console.log(`[🔥] Service is now running on ${port}!!!\n`));
+app.listen(port, () => console.log(`\n\n[🔥] Service is now running on ${port}!!!\n`));
