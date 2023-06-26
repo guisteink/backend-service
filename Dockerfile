@@ -1,15 +1,13 @@
-# Instala a imagem Node.js na minha imagem!
-FROM node:18.12.1-alpine3.16
+FROM node:15.8.0
 
-# define o diretório de trabalho para qualquer comando RUN, CMD, COPY
-# os arquivos que colocamos no contêiner do Docker executando o servidor estarão em:
 WORKDIR /usr/src
 
-# Copia package.json, package-lock.json, .env para a raiz de WORKDIR
-COPY ["package.json", "package-lock.json", "./"]
+COPY package*.json ./
 
-# Copia tudo do diretório src para WORKDIR/src
-COPY ./src ./src
-
-# Instala todos os pacotes no container
 RUN npm install
+
+COPY . .
+
+EXPOSE 8080
+
+CMD ["npm", "install"]
