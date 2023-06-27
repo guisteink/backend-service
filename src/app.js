@@ -7,7 +7,7 @@ const app = express();
 const port = 3000;
 
 app.use('/health-check', async(req, res) => {
-    console.info(`health-check request received at ${new Date().toISOString()}`);
+    console.info(`\nhealth-check request received at ${new Date().toISOString()}`);
     res
         .status(200)
         .send({
@@ -18,7 +18,7 @@ app.use('/health-check', async(req, res) => {
 app.use('/', async (req, res) => {
     let result, start, end;
     const { fibonacci } = req.query ?? 0;
-    console.info(`fibonnaci ${fibonacci}th request received at ${new Date().toISOString()}`);
+    console.info(`\nfibonnaci ${fibonacci}th request received at ${new Date().toISOString()}`);
 
     try {
         start = new Date().getTime();
