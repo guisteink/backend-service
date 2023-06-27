@@ -4,7 +4,7 @@ const fibonacciNumber = require('./algorithms/fibonacciNumberRecursive');
 const timer = require('./utils/timer');
 
 const app = express();
-const port = 8000;
+const port = 3000;
 
 app.use('/health-check', async(req, res) => {
     console.info(`health-check request received at ${new Date().toISOString()}`);
