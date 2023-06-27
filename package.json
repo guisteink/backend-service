@@ -13,6 +13,6 @@
     "stop": "pm2 stop src/app.js",
     "restart": "pm2 restart src/app.js",
     "kill": "killall node",
-    "log": "pm2 logs app --lines=10"
+    "log": "pm2 logs app --lines=100"
   }
 }
