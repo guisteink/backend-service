@@ -9,10 +9,12 @@
   },
   "scripts": {
     "start": "node --stack-size=32000 src/app.js",
-    "serve": "pm2 start src/app.js",
-    "stop": "pm2 stop src/app.js",
-    "restart": "pm2 restart src/app.js",
+    "serve": "pm2 start npm --name 'backend-service' -- run start",
+    "stop": "pm2 stop 'backend-service'",
+    "delete": "pm2 delete 'backend-service'",
+    "restart": "pm2 restart 'backend-service'",
     "kill": "killall node",
-    "log": "pm2 logs app --lines=100"
+    "log": "pm2 logs app --lines=100",
+    "list": "pm2 list"
   }
 }
