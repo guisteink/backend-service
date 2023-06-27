@@ -16,9 +16,9 @@ app.use('/health-check', async(req, res) => {
 });
 
 app.use('/', async (req, res) => {
-    let result, start, end;
+    let result, start, end, now;
+    now = new Date().toISOString();
     const { fibonacci } = req.query ?? 0;
-    console.info(`\nfibonnaci ${fibonacci}th request received at ${new Date().toISOString()}`);
 
     try {
         start = new Date().getTime();
@@ -32,7 +32,7 @@ app.use('/', async (req, res) => {
     }
 
     let timeSpent = timer(start, end);
-    console.log(`processing time: ${timeSpent} seconds`);
+    console.info(`\nfibonnaci ${fibonacci}th request received at ${now} - ${timeSpent} seconds spent`);
 
     res
         .status(200)
