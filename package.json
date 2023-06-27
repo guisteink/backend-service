@@ -14,7 +14,7 @@
     "delete": "pm2 delete 'backend-service'",
     "restart": "pm2 restart 'backend-service'",
     "kill": "killall node",
-    "log": "pm2 logs app --lines=100",
+    "log": "pm2 logs 'backend-service' --lines=100",
     "list": "pm2 list"
   }
 }
