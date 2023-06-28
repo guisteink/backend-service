@@ -31,15 +31,15 @@ app.use('/', async (req, res) => {
         throw new Error('Failed to calculate fibonacci number', error);
     }
 
-    let timeSpent = timer(start, end);
-    console.info(`\nfibonnaci ${fibonacci}th request received at ${now} - ${timeSpent} seconds spent`);
+    let time = timer(start, end);
+    console.info(`\nfibonnaci ${fibonacci}th request received at ${now} - ${time} seconds spent`);
 
     res
         .status(200)
         .send({
             result,
-            "time": `${parseFloat(timeSpent)}`
-        }).json();
+            time
+        });
 });
 
 app.listen(port, () => console.log(`\n\n[🔥] Service is now running on ${port}!!!\n`));
