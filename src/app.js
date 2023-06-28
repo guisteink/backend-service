@@ -38,7 +38,7 @@ app.use('/', async (req, res) => {
         .status(200)
         .send({
             result,
-            "time": `${parseInt(timeSpent)}`
+            "time": `${parseFloat(timeSpent)}`
         });
 });
 
