@@ -39,7 +39,7 @@ app.use('/', async (req, res) => {
         .send({
             result,
             "time": `${parseFloat(timeSpent)}`
-        });
+        }).json();
 });
 
 app.listen(port, () => console.log(`\n\n[🔥] Service is now running on ${port}!!!\n`));
