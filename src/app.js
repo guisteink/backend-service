@@ -37,11 +37,11 @@ if (clusterWorkerSize > 1) {
             const { fibonacci } = req.query ?? 0;
 
             try {
-                start = new Date().getTime();
+                start = await new Date().getTime();
 
                 result = await fibonacciNumber(fibonacci);
 
-                end = new Date().getTime();
+                end = await new Date().getTime();
             } catch (error) {
                 console.log(error);
                 throw new Error('Failed to calculate fibonacci number', error);
