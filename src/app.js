@@ -48,7 +48,7 @@ if (clusterWorkerSize > 1) {
             }
 
             let time = timer(start, end);
-            console.info(`\nfibonnaci ${fibonacci}th request received at ${now} - ${time} seconds spent`);
+            console.info(`\n[${process.pid}-work-thread] fibonnaci ${fibonacci}th request received at ${now} - ${time} seconds spent`);
 
             res
                 .status(200)
