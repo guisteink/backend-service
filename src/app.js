@@ -1,45 +1,100 @@
 const express = require('express');
+const os = require('os');
+const cluster = require('cluster');
 
 const fibonacciNumber = require('./algorithms/fibonacciNumberRecursive');
 const timer = require('./utils/timer');
 
-const app = express();
 const port = 3000;
 
-app.use('/health-check', async(req, res) => {
-    console.info(`\nhealth-check request received at ${new Date().toISOString()}`);
-    res
-        .status(200)
-        .send({
-            "result": "OK"
+const clusterWorkerSize = os.cpus().length;
+
+if (clusterWorkerSize > 1) {
+    if (cluster.isMaster) {
+        for(let i = 0; i < clusterWorkerSize; i++) {
+            cluster.fork();
+        }
+
+        cluster.on("exit", function(worker) {
+            console.log("Worker ", worker.id, " has exitted.")
         });
-});
+    } else {
+        const app = express();
+        app.listen(port, () => console.log(`\n\n[🔥][${process.pid}-work-thread] running on ${port}!!!\n`));
 
-app.use('/', async (req, res) => {
-    let result, start, end, now;
-    now = new Date().toISOString();
-    const { fibonacci } = req.query ?? 0;
+        app.use('/health-check', async(req, res) => {
+            console.info(`\nhealth-check request received at ${new Date().toISOString()}`);
+            res
+                .status(200)
+                .send({
+                    "result": "OK"
+                });
+        });
 
-    try {
-        start = new Date().getTime();
+        app.use('/', async (req, res) => {
+            let result, start, end, now;
+            now = new Date().toISOString();
+            const { fibonacci } = req.query ?? 0;
 
-        result = await fibonacciNumber(fibonacci);
+            try {
+                start = new Date().getTime();
 
-        end = new Date().getTime();
-    } catch (error) {
-        console.log(error);
-        throw new Error('Failed to calculate fibonacci number', error);
+                result = await fibonacciNumber(fibonacci);
+
+                end = new Date().getTime();
+            } catch (error) {
+                console.log(error);
+                throw new Error('Failed to calculate fibonacci number', error);
+            }
+
+            let time = timer(start, end);
+            console.info(`\nfibonnaci ${fibonacci}th request received at ${now} - ${time} seconds spent`);
+
+            res
+                .status(200)
+                .send({
+                    result,
+                    time
+                });
+        });
     }
+} else {
+    const app = express();
+    app.listen(port, () => console.log(`\n\n[🔥][${process.pid}-work-thread] running on ${port}!!!\n`));
 
-    let time = timer(start, end);
-    console.info(`\nfibonnaci ${fibonacci}th request received at ${now} - ${time} seconds spent`);
+    app.use('/health-check', async(req, res) => {
+        console.info(`\nhealth-check request received at ${new Date().toISOString()}`);
+        res
+            .status(200)
+            .send({
+                "result": "OK"
+            });
+    });
 
-    res
-        .status(200)
-        .send({
-            result,
-            time
-        });
-});
+    app.use('/', async (req, res) => {
+        let result, start, end, now;
+        now = new Date().toISOString();
+        const { fibonacci } = req.query ?? 0;
 
-app.listen(port, () => console.log(`\n\n[🔥] Service is now running on ${port}!!!\n`));
+        try {
+            start = new Date().getTime();
+
+            result = await fibonacciNumber(fibonacci);
+
+            end = new Date().getTime();
+        } catch (error) {
+            console.log(error);
+            throw new Error('Failed to calculate fibonacci number', error);
+        }
+
+        let time = timer(start, end);
+        console.info(`\nfibonnaci ${fibonacci}th request received at ${now} - ${time} seconds spent`);
+
+        res
+            .status(200)
+            .send({
+                result,
+                time
+            });
+    });
+}
