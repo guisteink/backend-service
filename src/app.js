@@ -37,14 +37,14 @@ if (clusterWorkerSize > 1) {
             const { fibonacci } = req.query ?? 0;
 
             try {
-                const before = await performance.eventLoopUtilization();
                 await performance.mark('start');
+
                 result = await fibonacciNumber(fibonacci);
 
-                const after = await performance.eventLoopUtilization();
+                const cpuInUse = await performance.eventLoopUtilization();
                 await performance.mark('end');
 
-                cpuUsage = (after.utilization - before.utilization).toFixed(3);
+                cpuUsage = cpuInUse.utilization.toFixed(3);
                 performance.measure('execution_time', 'start', 'end');
             } catch (error) {
                 console.log(error);
@@ -86,6 +86,7 @@ if (clusterWorkerSize > 1) {
             try {
                 const before = await performance.eventLoopUtilization();
                 await performance.mark('start');
+
                 result = await fibonacciNumber(fibonacci);
 
                 const after = await performance.eventLoopUtilization();
