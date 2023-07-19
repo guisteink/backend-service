@@ -1,9 +1,9 @@
 const express = require('express');
 const os = require('os');
 const cluster = require('cluster');
+const { performance } = require('perf_hooks');
 
 const fibonacciNumber = require('./algorithms/fibonacciNumberRecursive');
-const timer = require('./utils/timer');
 
 const port = 3000;
 
@@ -32,29 +32,36 @@ if (clusterWorkerSize > 1) {
         });
 
         app.use('/', async (req, res) => {
-            let result, start, end, now;
+            let result, now;
             now = new Date().toISOString();
             const { fibonacci } = req.query ?? 0;
 
             try {
-                start = await new Date().getTime();
-
+                const before = await performance.eventLoopUtilization();
+                await performance.mark('start');
                 result = await fibonacciNumber(fibonacci);
 
-                end = await new Date().getTime();
+                const after = await performance.eventLoopUtilization();
+                await performance.mark('end');
+
+                cpuUsage = (after.utilization - before.utilization).toFixed(3);
+                performance.measure('execution_time', 'start', 'end');
             } catch (error) {
                 console.log(error);
                 throw new Error('Failed to calculate fibonacci number', error);
             }
 
-            let time = timer(start, end);
-            console.info(`\n[${process.pid}-work-thread] fibonnaci ${fibonacci}th request received at ${now} - ${time} seconds spent`);
+            const time = performance.getEntriesByName('execution_time')[0]?.duration?.toFixed(3);
+            console.info(`\n[${process.pid}-work-thread][cpu-usage-${cpuUsage*100}%][${time}ms] fibonnaci ${fibonacci}th request received at ${now}`);
+
+            performance.clearMeasures();
 
             res
                 .status(200)
                 .send({
                     result,
-                    time
+                    time,
+                    cpuUsage
                 });
         });
     }
@@ -72,29 +79,36 @@ if (clusterWorkerSize > 1) {
     });
 
     app.use('/', async (req, res) => {
-        let result, start, end, now;
-        now = new Date().toISOString();
-        const { fibonacci } = req.query ?? 0;
+        let result, now;
+            now = new Date().toISOString();
+            const { fibonacci } = req.query ?? 0;
 
-        try {
-            start = new Date().getTime();
+            try {
+                const before = await performance.eventLoopUtilization();
+                await performance.mark('start');
+                result = await fibonacciNumber(fibonacci);
 
-            result = await fibonacciNumber(fibonacci);
+                const after = await performance.eventLoopUtilization();
+                await performance.mark('end');
 
-            end = new Date().getTime();
-        } catch (error) {
-            console.log(error);
-            throw new Error('Failed to calculate fibonacci number', error);
-        }
+                cpuUsage = (after.utilization - before.utilization).toFixed(3);
+                performance.measure('execution_time', 'start', 'end');
+            } catch (error) {
+                console.log(error);
+                throw new Error('Failed to calculate fibonacci number', error);
+            }
 
-        let time = timer(start, end);
-        console.info(`\n[${process.pid}-work-thread] fibonnaci ${fibonacci}th request received at ${now} - ${time} seconds spent`);
+            const time = performance.getEntriesByName('execution_time')[0]?.duration?.toFixed(3);
+            console.info(`\n[${process.pid}-work-thread][cpu-usage-${cpuUsage*100}%][${time}ms] fibonnaci ${fibonacci}th request received at ${now}`);
 
-        res
-            .status(200)
-            .send({
-                result,
-                time
-            });
+            performance.clearMeasures();
+
+            res
+                .status(200)
+                .send({
+                    result,
+                    time,
+                    cpuUsage
+                });
     });
 }

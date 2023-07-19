@@ -7,7 +7,8 @@
   "dependencies": {
     "cluster": "^0.7.7",
     "express": "^4.18.1",
-    "os": "^0.1.2"
+    "os": "^0.1.2",
+    "perf_hooks": "^0.0.1"
   },
   "scripts": {
     "start": "node --max-old-space-size=32768 src/app.js",
